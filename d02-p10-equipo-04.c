@@ -38,18 +38,20 @@ void barajar(int *array, int n){ //
     }
 }
 
-void evaluarRespuesta(char res, int indice){
-    static char *respuestas[]={
-        "A","B","B","A","C","C","A","B","A","C",
-        "B","A","C","C","A","A","B","C","A","C",
-        "B","A","A","B","A","B","B","C","C","C"
+int evaluarRespuesta(char res, int indice){
+    static char respuestas[]={
+        'A','B','B','A','C','C','A','B','A','C', //comillas simples para los char
+        'B','A','C','C','A','A','B','C','A','C',
+        'B','A','A','B','A','B','B','C','C','C'
     };
-    if(res == respuestas[indice][0]){
+    if(res == respuestas[indice]){
             gotoxy(35,11);
             printf("respuesta correcta");
+            return 1;
     }else{
         gotoxy(35,11);
         printf("respuesta incorrecta");
+        return 0;
     }
 }
 
@@ -92,16 +94,21 @@ int main(){
         }
 
         barajar(numeros,total);
-
+        int progreso = 1;
+        float porcentaje = 0.0;
         gotoxy(35, 3);
         printf("Preguntas:");
+        int correctas = 0;
         for(int i = 0; i<generar; i++){
             char res;
             system("cls");
             int indice = numeros[i]-1;
-            int progreso = 1;
             for(;;){
                 system("cls");
+                if(porcentaje > 0){
+                    gotoxy(50, 5);
+                    printf("Porcentaje de aciertos: %2.f%%", porcentaje);
+                }
                 gotoxy(50,3);
                 printf("%i / 10",progreso);
                 presentarPreguntas(indice);
@@ -112,16 +119,21 @@ int main(){
                     printf("Opcion no valida, ingresa A,B o C");
                     getch();
                 }else{
-                    evaluarRespuesta(res, indice);
+                    correctas += evaluarRespuesta(res,indice); //la funcion regresa 1 o 0 sumando eso a la variable correctas
+                    porcentaje = (correctas*100.0)/10.0;
+                    progreso+=1;
                     break;
                 }
             }
+            gotoxy(50, 5);
+            printf("Porcentaje de aciertos: %2.f%%", porcentaje);
             getch();
             system("cls");
         }
         gotoxy(35, 15);
         printf("%s, Presiona cualquier tecla para continuar.", nombre);
         getch();
+
 
     }
 
